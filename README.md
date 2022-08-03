@@ -1,2 +1,2 @@
 # spring-auth
-Database agnostic spring auth service
+Spring auth service
