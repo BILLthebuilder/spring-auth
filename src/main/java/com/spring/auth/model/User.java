@@ -57,7 +57,7 @@ public class User implements Serializable {
         this.dateUpdated = new Date();
     }
 
-    @Column(name = "status", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(name = "status", columnDefinition = "TINYINT(1) DEFAULT 1")
     Boolean status;
 
     /**
