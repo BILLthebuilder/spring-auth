@@ -1,2 +1,2 @@
 # spring-auth
-Spring auth service
+Stateless Spring auth service
