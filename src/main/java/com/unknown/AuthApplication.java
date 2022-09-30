@@ -1,10 +1,7 @@
-package com.spring.auth;
+package com.unknown;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Profile;
 
 //@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 @SpringBootApplication

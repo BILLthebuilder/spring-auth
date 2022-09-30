@@ -1,4 +1,4 @@
-package com.spring.auth.model;
+package com.unknown.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

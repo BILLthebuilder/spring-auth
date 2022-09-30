@@ -1,7 +1,7 @@
-package com.spring.auth;
+package com.unknown;
 
-import com.spring.auth.model.User;
-import com.spring.auth.repository.UserRepository;
+import com.unknown.model.User;
+import com.unknown.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
