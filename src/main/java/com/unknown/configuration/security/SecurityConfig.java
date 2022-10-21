@@ -117,9 +117,8 @@ public class SecurityConfig {
 //        var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 //        return new NimbusJwtEncoder(jwks);
         var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-        var jwks = new ImmutableSecret<>(key);
-        return new NimbusJwtEncoder(jwks);
-
+        var immutableSecret = new ImmutableSecret<>(key);
+        return new NimbusJwtEncoder(immutableSecret);
     }
 
     // Used by JwtAuthenticationProvider to decode and validate JWT tokens
