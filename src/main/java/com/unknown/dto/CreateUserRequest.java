@@ -1,11 +1,6 @@
 package com.unknown.dto;
 
-import com.unknown.exception.PasswordsException;
-import lombok.SneakyThrows;
-
-import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -18,8 +13,12 @@ public record CreateUserRequest(
         @Email(message = "Invalid Email Address")
         String email,
         @NotEmpty
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,32}$",
+                message = "Password must have least 8 characters,at least one uppercase letter, one lowercase letter and one number")
         String password,
         @NotEmpty
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,32}$",
+                message = "Password must have least 8 characters,at least one uppercase letter, one lowercase letter and one number")
         String repeatPassword,
         @NotEmpty
         //@Pattern(regexp = "")
