@@ -89,7 +89,7 @@ public class SecurityConfig {
                                 .httpBasic(Customizer.withDefaults())
                                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
                     } catch (Exception e) {
-                        log.error("Filter Chain error={}", e);
+                        log.error("Filter Chain error=%s", e);
                     }
                 });
         return http.build();
