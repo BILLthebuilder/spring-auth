@@ -2,6 +2,7 @@ package com.unknown.service;
 
 
 import com.unknown.dto.CreateUserRequest;
+import com.unknown.dto.CustomUserDetails;
 import com.unknown.dto.LoginUserRequest;
 import com.unknown.dto.UpdateUserRequest;
 import com.unknown.exception.UserCrudException;
@@ -45,6 +46,8 @@ public class UserService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
 
+    private final CustomUserDetailsService customUserDetailsService;
+
     @Transactional
     public void create(CreateUserRequest request) {
         var user = new User();
@@ -52,15 +55,16 @@ public class UserService implements UserDetailsService {
             if (emailExists(request.email())) {
                 throw new ValidationException("Email exists!");
             }
-            if (!request.password().equals(request.repeatPassword())) {
-                throw new ValidationException("Passwords don't match!");
-            }
+//            if (!request.password().equals(request.repeatPassword())) {
+//                throw new ValidationException("Passwords don't match!");
+//            }
 
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
-            user.setPassword(passwordEncoder.encode(request.password()));
             user.setEmail(request.email());
-
+            user.setPassword(passwordEncoder.encode(request.password()));
+            user.setPhoneNumber(request.phoneNumber());
+            user.setStatus(true);
             userRepository.save(user);
         }catch (Exception ex){
             log.error("Error creating user=%s",ex);
@@ -75,28 +79,31 @@ public class UserService implements UserDetailsService {
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
-            var user = (User) authentication.getPrincipal();
 
-            var now = Instant.now();
-            var expiry = 36000L;
+
+                var user = authentication.getPrincipal();
+            log.debug("Auth object>>>>>>>={}",authentication);
+                var now = Instant.now();
+                var expiry = 36000L;
 //            var scope =
 //                    authentication.getAuthorities().stream()
 //                            .map(GrantedAuthority::getAuthority)
 //                            .collect(joining(" "));
 
-            var claims =
-                    JwtClaimsSet.builder()
-                            .issuer("example.io")
-                            .issuedAt(now)
-                            .expiresAt(now.plusSeconds(expiry))
-                            .subject(format("%s,%s", user.getId(), user.getEmail()))
+                var claims =
+                        JwtClaimsSet.builder()
+                                .issuer("example.io")
+                                .issuedAt(now)
+                                .expiresAt(now.plusSeconds(expiry))
+                                .subject("something")
 //                            .claim("roles", scope)
-                            .build();
+                                .build();
 
-            token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+                token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            //}
 
-        } catch (BadCredentialsException e) {
-            log.error("Invalid Credentials=%s",e);
+        } catch (Exception e) {
+            log.error("Invalid Credentials",e);
             throw new BadCredentialsException("Invalid Credentials");
         }
         return token;
@@ -148,20 +155,24 @@ public class UserService implements UserDetailsService {
 
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return (UserDetails) userRepository
-                .findByEmail(email)
-                .orElseThrow(
-                        () ->
-                                new UsernameNotFoundException(
-                                        format("User with email - %s, not found", email)));
+        return customUserDetailsService
+                .loadUserByUsername(email);
     }
 
     public boolean emailExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        boolean isPresent = false;
+        if(userRepository.findByEmail(email) != null){
+            isPresent = true;
+        }
+      return isPresent;
     }
 
     public boolean userExists(long id) {
-        return userRepository.findById(id).isPresent();
+        boolean isPresent = false;
+        if(userRepository.findById(id) != null){
+            isPresent = true;
+        }
+        return isPresent;
     }
 
 
