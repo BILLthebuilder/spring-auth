@@ -8,8 +8,10 @@ public record LoginUserRequest(
         @NotEmpty(message = "Email cannot be blank")
         @Email(message = "Invalid Email Address")
         String email,
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,32}$",
-                message = "Password must have least 8 characters,at least one uppercase letter, one lowercase letter and one number")
+        @NotEmpty
+        @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$",
+                message = "Password must have least 8 characters," +
+                        "at least one uppercase letter, one lowercase letter,one special character(@,*) and one number")
         String password
 ) {
 }
