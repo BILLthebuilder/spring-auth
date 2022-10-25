@@ -1,7 +1,12 @@
 package com.unknown.configuration.security;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.unknown.repository.UserRepository;
+import com.unknown.service.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -39,27 +45,34 @@ import java.security.interfaces.RSAPublicKey;
 
 import static java.lang.String.format;
 
-@Configuration
 @Slf4j
-@Repository
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
-//    @Value("${jwt.public.key}")
-//    private RSAPublicKey rsaPublicKey;
-//
-//    @Value("${jwt.private.key}")
-//    private RSAPrivateKey rsaPrivateKey;
+    @Value("${jwt.public.key}")
+    private RSAPublicKey rsaPublicKey;
+
+    @Value("${jwt.private.key}")
+    private RSAPrivateKey rsaPrivateKey;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    public SecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(bCryptPasswordEncoder)
+                .and()
+                .build();
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //Enable CORS and disable CSRF
@@ -96,37 +109,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(
-                        username ->
-                                (UserDetails) userRepository
-                                        .findByEmail(username)
-                                        .orElseThrow(
-                                                () ->
-                                                        new UsernameNotFoundException(format("User: %s, not found", username))))
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
-    }
-
-    @Bean
     public JwtEncoder jwtEncoder() {
-//        var jwk = new RSAKey.Builder(this.rsaPublicKey).privateKey(this.rsaPrivateKey).build();
-//        var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-//        return new NimbusJwtEncoder(jwks);
-        var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-        var immutableSecret = new ImmutableSecret<>(key);
-        return new NimbusJwtEncoder(immutableSecret);
+        var jwk = new RSAKey.Builder(this.rsaPublicKey).privateKey(this.rsaPrivateKey).build();
+        var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+//        var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+//        var immutableSecret = new ImmutableSecret<>(key);
+//        return new NimbusJwtEncoder(immutableSecret);
     }
 
     // Used by JwtAuthenticationProvider to decode and validate JWT tokens
     @Bean
     public JwtDecoder jwtDecoder() {
-        var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-        //return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
-        return NimbusJwtDecoder.withSecretKey(key).build();
+       // var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
+        //return NimbusJwtDecoder.withSecretKey(key).build();
     }
 
     @Bean
