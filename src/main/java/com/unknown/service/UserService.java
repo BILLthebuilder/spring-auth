@@ -37,7 +37,7 @@ import static java.util.stream.Collectors.joining;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService implements UserDetailsService {
+public class UserService  {
 
     private final UserRepository userRepository;
 
