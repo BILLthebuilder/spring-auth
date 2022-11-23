@@ -4,7 +4,7 @@
         <property name="LOGS" value="/Volumes/projects/logs/dev" />
     </springProfile>
     <springProfile name="prod">
-        <property name="LOGS" value="/Volumes/projects/logs/prod" />
+        <property name="LOGS" value="/home/logs/" />
     </springProfile>
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
