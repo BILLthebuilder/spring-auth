@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,10 +56,6 @@ public class UserService  {
             if (emailExists(request.email())) {
                 throw new ValidationException("Email exists!");
             }
-//            if (!request.password().equals(request.repeatPassword())) {
-//                throw new ValidationException("Passwords don't match!");
-//            }
-
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
             user.setEmail(request.email());
@@ -78,33 +75,29 @@ public class UserService  {
             var authentication =
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-
-
-
-                var user = authentication.getPrincipal();
-            log.debug("Auth object>>>>>>>={}",authentication);
-                var now = Instant.now();
-                var expiry = 36000L;
-//            var scope =
-//                    authentication.getAuthorities().stream()
-//                            .map(GrantedAuthority::getAuthority)
-//                            .collect(joining(" "));
-
-                var claims =
-                        JwtClaimsSet.builder()
-                                .issuer("example.io")
-                                .issuedAt(now)
-                                .expiresAt(now.plusSeconds(expiry))
-                                .subject("something")
+                if(!authentication.isAuthenticated()){
+                    token = null;
+                }else {
+                    var now = Instant.now();
+                    var expiry = 36000L;
+                    var claims =
+                            JwtClaimsSet.builder()
+                                    .issuer("example.io")
+                                    .issuedAt(now)
+                                    .expiresAt(now.plusSeconds(expiry))
+                                    .subject("something")
 //                            .claim("roles", scope)
-                                .build();
+                                    .build();
 
-                token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-            //}
-
+                    token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+                    //}
+                }
+        } catch (DisabledException d){
+            log.error("User is disabled",d.getMessage());
+        }catch (BadCredentialsException b){
+            log.error("Invalid Credentials",b.getMessage());
         } catch (Exception e) {
             log.error("Invalid Credentials",e);
-            throw new BadCredentialsException("Invalid Credentials");
         }
         return token;
     }
