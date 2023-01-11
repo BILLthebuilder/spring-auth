@@ -113,17 +113,12 @@ public class SecurityConfig {
         var jwk = new RSAKey.Builder(this.rsaPublicKey).privateKey(this.rsaPrivateKey).build();
         var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
-//        var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-//        var immutableSecret = new ImmutableSecret<>(key);
-//        return new NimbusJwtEncoder(immutableSecret);
     }
 
     // Used by JwtAuthenticationProvider to decode and validate JWT tokens
     @Bean
     public JwtDecoder jwtDecoder() {
-       // var key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
-        //return NimbusJwtDecoder.withSecretKey(key).build();
     }
 
     @Bean
