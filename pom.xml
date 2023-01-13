@@ -12,7 +12,7 @@
 	<artifactId>spring-auth</artifactId>
 	<version>0.1</version>
 	<name>auth</name>
-	<description>Database agnostic spring auth service</description>
+	<description>Database agnostic spring auth service queus</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
