@@ -34,5 +34,5 @@ jobs:
             git fetch --all &&
             git reset --hard origin/master &&
             git pull origin master &&
-            mvn clean compile package 
+            /home/ubuntu/.sdkman/candidates/maven/current/bin/mvn clean compile package 
           '
