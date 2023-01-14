@@ -1,15 +1,11 @@
-FROM maven:3.6.3 AS maven
-# Create a workdir for our app
-WORKDIR /usr/src/app
-COPY . /usr/src/app
+FROM amazoncorretto:17.0.5 as builder
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
 
-# Compile and package the application to an executable JAR
-RUN mvn clean package -DskipTests \
-# Using java 17
-FROM amazoncorretto:17
-
-ARG JAR_FILE=/usr/src/app/target/*.jar
-# Copying JAR file
-COPY --from=maven ${JAR_FILE} app.jar
-
-ENTRYPOINT ["java","-jar","/app.jar"]
+FROM adoptopenjdk:11-jre-hotspot
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+COPY --from=builder application/ ./
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
