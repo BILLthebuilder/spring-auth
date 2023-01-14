@@ -35,4 +35,5 @@ jobs:
             mkdir -p /home/ubuntu/logs 
             sudo chmod +x ./deploy.sh
             ./deploy.sh
+          exit 0
           '
