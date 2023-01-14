@@ -9,14 +9,14 @@ sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
 sudo apt update
 sudo apt install -y java-17-amazon-corretto-jdk
 sudo apt install -y nginx
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-yes | curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-apt-cache policy docker-ce
-sudo apt install -y docker-ce
+#sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+#yes | curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+#apt-cache policy docker-ce
+#sudo apt install -y docker-ce
 
 # make sure spring-auth docker is not running
-sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=spring-auth:latest --format="{{.ID}}"))
+#sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=spring-auth:latest --format="{{.ID}}"))
 
 # copy nginx conf to default
 sudo cp nginx.conf /etc/nginx/conf.d/default.conf
@@ -24,10 +24,14 @@ sudo cp nginx.conf /etc/nginx/conf.d/default.conf
 sudo systemctl restart nginx
 
 # build dockerfile
-sudo docker build -f Dockerfile -t spring-auth:latest .
+#sudo docker build -f Dockerfile -t spring-auth:latest .
 
 # run in detached mode
-sudo docker run -p 8080:8080 -d spring-auth:latest
+#sudo docker run -p 8080:8080 -d spring-auth:latest
+
+/opt/apache-maven-3.8.7/bin/mvn clean compile package
+
+cd target && nohup java -jar *.jar &
 
 sleep 15
 
