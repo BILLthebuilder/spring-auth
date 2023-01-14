@@ -25,7 +25,7 @@ jobs:
           USER_NAME: ${{secrets.USERNAME}}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          ssh -o ServerAliveInterval=300 StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
           
             rm -rf /home/ubuntu/spring-auth
             git clone git@github.com:billkariri-experimental/spring-auth.git
