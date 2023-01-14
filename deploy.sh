@@ -31,6 +31,8 @@ sudo systemctl restart nginx
 
 /opt/apache-maven-3.8.7/bin/mvn clean compile package
 
+fuser -k 8080/tcp
+
 cd target && nohup java -jar *.jar &
 
 sleep 15
