@@ -26,7 +26,7 @@ jobs:
           sleep 10
       - name: Deploy on AWS EC2
         env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY  }}
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
           HOSTNAME: ${{ secrets.HOSTNAME  }}
           USER_NAME: ${{ secrets.USERNAME  }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
