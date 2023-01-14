@@ -1,30 +1,38 @@
-name: spring-auth app
-
+name: SPRING-AUTH-APP
 on:
   push:
-    branches: [ master ]
-
+    branches:
+      - master
 jobs:
-#First we will see the application build or not , then we will deploy in EC2
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v2
-      
-  Deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploy in EC2
+      - name: Get Github action IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: AWS configure
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID  }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Add github actions IP to security group
         env:
-            PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-            HOSTNAME : ${{ secrets.HOSTNAME  }}
+          AWS_SECURITY_GROUP: ${{ secrets.AWS_SECURITY_GROUP }}
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${HOSTNAME} '
+          aws ec2 authorize-security-group-ingress --group-id ${{ env.AWS_SECURITY_GROUP }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/16
+          sleep 10
+      - name: Deploy on AWS EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY  }}
+          HOSTNAME: ${{ secrets.HOSTNAME  }}
+          USER_NAME: ${{ secrets.USERNAME  }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME}
           
             rm -rf /home/ubuntu/spring-auth
             git clone git@github.com:billkariri-experimental/spring-auth.git
@@ -32,9 +40,13 @@ jobs:
             git checkout master
             git pull origin master 
             mkdir -p /home/ubuntu/logs 
-            fuser -k 8972/tcp 
-            /opt/apache-maven-3.8.7/bin/mvn clean compile package -DskipTests 
-            cd /home/ubuntu/spring-auth/target
-            nohup java -jar *jar &
-            exit 0
+            sudo chmod +x ./deploy.sh
+            ./deploy.sh
           '
+          rm -rf private_key.pem
+      - name: Remove github actions IP from security group
+        env:
+          AWS_SECURITY_GROUP: ${{ secrets.AWS_SECURITY_GROUP }}
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ env.AWS_SECURITY_GROUP }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/16
+        if: always()
