@@ -50,7 +50,7 @@ public class User implements Serializable {
     @Column(name = "phone_number", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String phoneNumber;
 
-    @Column(name = "phone_number", unique = true, nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(name = "verification_code", unique = true, nullable = false, columnDefinition = "VARCHAR(255)")
     private String verficationCode;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
