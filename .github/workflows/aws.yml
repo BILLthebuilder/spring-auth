@@ -18,8 +18,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Maven
-        uses: stCarolas/setup-maven@v.4.5
       - name: Deploy in EC2
         env:
             PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
@@ -34,5 +32,8 @@ jobs:
             git fetch --all &&
             git reset --hard origin/master &&
             git pull origin master &&
-            /opt/apache-maven-3.8.7/bin/mvn clean compile package -DskipTests
+            mkdir /home/logs &&
+            /opt/apache-maven-3.8.7/bin/mvn clean compile package -DskipTests &&
+            cd /home/ubuntu/spring-auth/target &&
+            nohup java -jar *jar &
           '
