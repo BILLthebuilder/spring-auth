@@ -26,14 +26,14 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${HOSTNAME} '
           
-            cd /home/ubuntu/spring-auth &&
-            git checkout master &&
-            git fetch --all &&
-            git reset --hard origin/master &&
-            git pull origin master &&
-            mkdir -p /home/ubuntu/logs &&
-            fuser -k 8972/tcp &&
-            /opt/apache-maven-3.8.7/bin/mvn clean compile package -DskipTests &&
-            cd /home/ubuntu/spring-auth/target &&
+            rm -rf /home/ubuntu/spring-auth
+            git clone git@github.com:billkariri-experimental/spring-auth.git
+            cd /home/ubuntu/spring-auth 
+            git checkout master
+            git pull origin master 
+            mkdir -p /home/ubuntu/logs 
+            fuser -k 8972/tcp 
+            /opt/apache-maven-3.8.7/bin/mvn clean compile package -DskipTests 
+            cd /home/ubuntu/spring-auth/target
             nohup java -jar *jar &
           '
