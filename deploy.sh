@@ -100,3 +100,4 @@ else
 fi
 
 echo 'Deployment completed successfully'
+exit 0
