@@ -15,8 +15,8 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 apt-cache policy docker-ce
 sudo apt install -y docker-ce
 
-# make sure demo docker is not running
-sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=demo:latest --format="{{.ID}}"))
+# make sure spring-auth docker is not running
+sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=spring-auth:latest --format="{{.ID}}"))
 
 # copy nginx conf to default
 sudo cp nginx.conf /etc/nginx/conf.d/default.conf
@@ -24,10 +24,10 @@ sudo cp nginx.conf /etc/nginx/conf.d/default.conf
 sudo systemctl restart nginx
 
 # build dockerfile
-sudo docker build -f Dockerfile -t demo:latest .
+sudo docker build -f Dockerfile -t spring-auth:latest .
 
 # run in detached mode
-sudo docker run -p 8080:8080 -d demo:latest
+sudo docker run -p 8080:8080 -d spring-auth:latest
 
 sleep 15
 
