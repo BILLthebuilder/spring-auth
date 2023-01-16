@@ -24,11 +24,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT}}
           script: |
-           rm -rf /home/ubuntu/spring-auth
-           git clone git@github.com:billkariri-experimental/spring-auth.git
-           cd /home/ubuntu/spring-auth
-           git checkout master
-           git pull origin master
            mkdir -p /home/ubuntu/logs
            sudo chmod +x ./deploy.sh
            ./deploy.sh
