@@ -21,7 +21,7 @@ jobs:
         with:
           host: ${{secrets.HOSTNAME}}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD}}
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT}}
           script: |
            rm -rf /home/ubuntu/spring-auth
