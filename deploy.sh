@@ -29,11 +29,11 @@ sudo systemctl restart nginx
 # run in detached mode
 #sudo docker run -p 8080:8080 -d spring-auth:latest
 
-/opt/apache-maven-3.8.7/bin/mvn clean compile package
+#/opt/apache-maven-3.8.7/bin/mvn clean compile package
 
-fuser -k 8080/tcp
+#fuser -k 8080/tcp
 
-cd target && nohup java -jar *.jar &
+#cd target && nohup java -jar *.jar &
 
 sleep 15
 
