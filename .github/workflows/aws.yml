@@ -15,25 +15,21 @@ jobs:
   Deploy:
     needs: build
     runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploy in EC2
-        env:
-          PRIVATE_KEY: ${{secrets.SSH_KEY}}
-          HOSTNAME : ${{secrets.HOSTNAME}}
-          USER_NAME: ${{secrets.USERNAME}}
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=300 -i private_key ${USER_NAME}@${HOSTNAME} '
-          
-            rm -rf /home/ubuntu/spring-auth
-            git clone git@github.com:billkariri-experimental/spring-auth.git
-            cd /home/ubuntu/spring-auth 
-            git checkout master
-            git pull origin master 
-            mkdir -p /home/ubuntu/logs 
-            sudo chmod +x ./deploy.sh
-            ./deploy.sh
-          exit 0
-          '
+  steps:
+    - name: Connect
+    - uses: appleboy/ssh-action@master
+          with:
+            host: ${{secrets.HOSTNAME}}
+            username: ${{ secrets.USERNAME }}
+            password: ${{ secrets.PASSWORD}}
+            port: ${{ secrets.PORT}}
+            script: |
+              '
+               rm -rf /home/ubuntu/spring-auth
+               git clone git@github.com:billkariri-experimental/spring-auth.git
+               cd /home/ubuntu/spring-auth 
+               git checkout master
+               git pull origin master 
+               mkdir -p /home/ubuntu/logs 
+               sudo chmod +x ./deploy.sh
+               ./deploy.sh'
