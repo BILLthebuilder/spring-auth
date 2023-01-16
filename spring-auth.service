@@ -1,0 +1,13 @@
+[Unit]
+Description=Spring Auth App
+After=syslog.target
+
+[Service]
+User=myapplication
+ExecStart=/home/ubuntu/spring-auth/*.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

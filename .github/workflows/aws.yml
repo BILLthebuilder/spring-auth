@@ -31,5 +31,9 @@ jobs:
             git checkout master
             git pull origin master
             /opt/apache-maven-3.8.7/bin/mvn clean compile package
-            cd target && nohup java -jar *.jar &
+            sudo cp spring-auth.service /home/ubuntu/
+            cd /home/ubuntu
+            sudo systemctl enable my-application.service
+            sudo systemctl stop spring-auth.service
+            sudo systemctl start spring-auth.service
             exit 0
