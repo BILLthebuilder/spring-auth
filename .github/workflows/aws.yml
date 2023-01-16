@@ -7,7 +7,7 @@ on:
 jobs:
   #First we will see the application build or not , then we will deploy in EC2
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -15,21 +15,20 @@ jobs:
   Deploy:
     needs: build
     runs-on: ubuntu-latest
-  steps:
-    - name: Connect
-    - uses: appleboy/ssh-action@master
-          with:
-            host: ${{secrets.HOSTNAME}}
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD}}
-            port: ${{ secrets.PORT}}
-            script: |
-              '
-               rm -rf /home/ubuntu/spring-auth
-               git clone git@github.com:billkariri-experimental/spring-auth.git
-               cd /home/ubuntu/spring-auth 
-               git checkout master
-               git pull origin master 
-               mkdir -p /home/ubuntu/logs 
-               sudo chmod +x ./deploy.sh
-               ./deploy.sh'
+    steps:
+      - name: Deploy on vps
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOSTNAME}}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD}}
+          port: ${{ secrets.PORT}}
+          script: |
+           rm -rf /home/ubuntu/spring-auth
+           git clone git@github.com:billkariri-experimental/spring-auth.git
+           cd /home/ubuntu/spring-auth
+           git checkout master
+           git pull origin master
+           mkdir -p /home/ubuntu/logs
+           sudo chmod +x ./deploy.sh
+           ./deploy.sh
