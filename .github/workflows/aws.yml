@@ -24,6 +24,7 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.PORT}}
           script: |
+            sudo systemctl stop spring-auth.service
             fuser -k 8080/tcp
             rm -rf /home/ubuntu/spring-auth
             git clone git@github.com:billkariri-experimental/spring-auth.git
@@ -33,7 +34,6 @@ jobs:
             /opt/apache-maven-3.8.7/bin/mvn clean compile package
             sudo cp spring-auth.service /home/ubuntu/
             cd /home/ubuntu
-            sudo systemctl enable my-application.service
-            sudo systemctl stop spring-auth.service
+            sudo systemctl enable spring-auth.service
             sudo systemctl start spring-auth.service
             exit 0
