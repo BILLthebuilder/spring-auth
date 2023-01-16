@@ -25,5 +25,4 @@ jobs:
           port: ${{ secrets.PORT}}
           script: |
            mkdir -p /home/ubuntu/logs
-           sudo chmod +x deploy.sh
            sh deploy.sh
