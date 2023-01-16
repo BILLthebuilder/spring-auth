@@ -24,9 +24,12 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.PORT}}
           script: |
+            fuser -k 8080/tcp
             rm -rf /home/ubuntu/spring-auth
             git clone git@github.com:billkariri-experimental/spring-auth.git
             cd /home/ubuntu/spring-auth
             git checkout master
             git pull origin master
-            sh deploy.sh
+            /opt/apache-maven-3.8.7/bin/mvn clean compile package
+            cd target && nohup java -jar *.jar &
+            exit 0
