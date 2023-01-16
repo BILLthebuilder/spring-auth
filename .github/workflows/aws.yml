@@ -24,6 +24,7 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.PORT}}
           script: |
-           mkdir -p /home/ubuntu/logs
-           cd /home/ubuntu/spring-auth
-           sh deploy.sh
+            mkdir -p /home/ubuntu/logs
+            cd /home/ubuntu/spring-auth
+            git checkout master
+            git pull origin master
