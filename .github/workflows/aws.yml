@@ -29,3 +29,4 @@ jobs:
             cd /home/ubuntu/spring-auth
             git checkout master
             git pull origin master
+            sh deploy.sh
