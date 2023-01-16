@@ -20,9 +20,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOSTNAME}}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.PORT}}
           script: |
-           mkdir -p /home/ubuntu/logs
+           mkdir -p /home/ubuntu/logs &&
            sh deploy.sh
