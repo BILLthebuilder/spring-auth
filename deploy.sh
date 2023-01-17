@@ -47,7 +47,7 @@ sudo systemctl start spring-auth.service
 
 sleep 15
 
-PORT=8080
+PORT=80
 checkHealth() {
     PORT=$1
     url="http://$HOSTNAME:$PORT/actuator/health"
