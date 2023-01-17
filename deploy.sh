@@ -19,7 +19,13 @@ sudo apt install -y nginx
 #sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=spring-auth:latest --format="{{.ID}}"))
 
 # copy nginx conf to default
-sudo cp nginx.conf /etc/nginx/conf.d/default.conf
+sudo cp spring-auth.conf /etc/nginx/sites-available/
+
+sudo ln -s /etc/nginx/sites-available/spring-auth.conf /etc/nginx/sites-enabled/
+
+sudo unlink /etc/nginx/sites-enabled/default
+
+sudo nginx -t
 
 sudo systemctl restart nginx
 
