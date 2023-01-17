@@ -1,33 +1,39 @@
-name: spring-auth app
+name: spring-auth
 
 on:
   push:
     branches: [ master ]
 
 jobs:
-  #First we will see the application build or not , then we will deploy in EC2
+
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
+Deploy:
+  needs: build
+  runs-on: ubuntu-latest
 
-  Deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy on vps
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOSTNAME}}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.SSH_KEY}}
-          port: ${{secrets.PORT}}
-          script: |
-            sudo systemctl stop spring-auth.service
-            fuser -k 8080/tcp
-            rm -rf /home/ubuntu/spring-auth
-            git clone git@github.com:billkariri-experimental/spring-auth.git
-            cd /home/ubuntu/spring-auth
-            mkdir -p /home/ubuntu/logs
-            sh deploy.sh
+  steps:
+    - uses: actions/checkout@v3
+    - name: Deploy in VPS
+      env:
+        PRIVATE_KEY: ${{secrets.SSH_KEY}}
+        HOSTNAME : ${{secrets.HOSTNAME}}
+        USER_NAME: ${{secrets.USERNAME}}
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -o -i private_key ${USER_NAME}@${HOSTNAME} '
+             
+          sudo systemctl stop spring-auth.service
+          fuser -k 8080/tcp
+          rm -rf /home/ubuntu/spring-auth
+          git clone git@github.com:billkariri-experimental/spring-auth.git
+          cd /home/ubuntu/spring-auth 
+          git checkout master
+          git pull origin master 
+          mkdir -p /home/ubuntu/logs 
+          sudo chmod +x ./deploy.sh
+          ./deploy.sh
+        '
