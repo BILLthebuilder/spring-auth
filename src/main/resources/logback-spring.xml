@@ -4,7 +4,7 @@
         <property name="LOGS" value="/Volumes/projects/logs/dev" />
     </springProfile>
     <springProfile name="prod">
-        <property name="LOGS" value="/home/ubuntu/logs/" />
+        <property name="LOGS" value="/home/ubuntu/logs" />
     </springProfile>
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
@@ -71,22 +71,35 @@
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
+    <appender name="RollingFileLog"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/spring-auth.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+        </encoder>
 
-    <!-- LOG at TRACE level -->
-<!--    <logger name="com.unknown" level="trace" additivity="false">-->
-<!--        <appender-ref ref="RollingFile" />-->
-<!--        <appender-ref ref="Console" />-->
-<!--        <appender-ref ref="STDERR" />-->
-<!--        <appender-ref ref="STDOUT" />-->
-<!--    </logger>-->
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 100 MegaBytes -->
+            <fileNamePattern>${LOGS}/archived/spring-auth-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
 
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="RollingFile" />
+        <appender-ref ref="RollingFileLog" />
     </root>
-    <!-- LOG "com.eclectics*" at TRACE level -->
+    <!-- LOG at TRACE level -->
     <logger name="com.unknown" level="trace" additivity="false">
         <appender-ref ref="RollingFile" />
+        <appender-ref ref="RollingFileLog" />
     </logger>
  
 </configuration>
