@@ -26,4 +26,8 @@ jobs:
           script: |
             sudo systemctl stop spring-auth.service
             fuser -k 8080/tcp
+            rm -rf /home/ubuntu/spring-auth
+            git clone git@github.com:billkariri-experimental/spring-auth.git
+            cd /home/ubuntu/spring-auth
+            mkdir -p /home/ubuntu/logs
             sh deploy.sh
