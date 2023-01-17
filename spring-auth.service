@@ -3,8 +3,8 @@ Description=Spring Auth App
 After=syslog.target
 
 [Service]
-User=myapplication
-ExecStart=/home/ubuntu/spring-auth/*.jar
+User=spring-auth
+ExecStart=/home/ubuntu/spring-auth/target/spring-auth-0.1.jar
 SuccessExitStatus=143
 Restart=always
 RestartSec=5

@@ -32,8 +32,9 @@ jobs:
             git checkout master
             git pull origin master
             /opt/apache-maven-3.8.7/bin/mvn clean compile package
-            sudo cp spring-auth.service /home/ubuntu/
-            cd /home/ubuntu
+            sudo useradd spring-auth
+            sudo chown spring-auth:spring-auth /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
+            sudo chmod 500 /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
+            sudo cp spring-auth.service /etc/systemd/system
             sudo systemctl enable spring-auth.service
             sudo systemctl start spring-auth.service
-            exit 0
