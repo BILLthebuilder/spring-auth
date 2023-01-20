@@ -34,13 +34,13 @@ sudo systemctl restart nginx
 
 # run in detached mode
 #sudo docker run -p 8080:8080 -d spring-auth:latest
-
-/opt/apache-maven-3.8.7/bin/mvn clean compile package
 sudo deluser spring-auth
 sudo useradd spring-auth
+sudo chown spring-auth:spring-auth /home/ubuntu/logs
+/opt/apache-maven-3.8.7/bin/mvn clean compile package
+
 sudo chown spring-auth:spring-auth /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
 sudo chmod 500 /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
-sudo chown spring-auth:spring-auth /home/ubuntu/logs
 sudo cp spring-auth.service /etc/systemd/system
 sudo systemctl enable spring-auth.service
 sudo systemctl start spring-auth.service
