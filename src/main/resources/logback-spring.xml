@@ -94,13 +94,13 @@
     <!-- LOG everything at INFO level -->
     <root level="info">
 <!--        <appender-ref ref="RollingFile" />-->
-<!--        <appender-ref ref="Console" />-->
+        <appender-ref ref="Console" />
         <appender-ref ref="RollingFile" />
     </root>
     <!-- LOG at TRACE level -->
     <logger name="com.unknown" level="trace" additivity="false">
 <!--        <appender-ref ref="RollingFile" />-->
-<!--        <appender-ref ref="Console" />-->
+        <appender-ref ref="Console" />
         <appender-ref ref="RollingFile" />
     </logger>
  
