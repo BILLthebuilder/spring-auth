@@ -22,7 +22,7 @@ public class H2TestProfileJPAConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.hibernate.dialect.MySQL5Dialect");
         dataSource.setUrl("jdbc:mysql://localhost:3306/spring-auth-test?createDatabaseIfNotExist=true");
-        dataSource.setUsername("root");
+        dataSource.setUsername("test");
         dataSource.setPassword("password");
 
         return dataSource;
