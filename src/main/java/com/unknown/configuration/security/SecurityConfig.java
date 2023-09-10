@@ -9,6 +9,7 @@ import com.unknown.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -94,7 +95,7 @@ public class SecurityConfig {
                                 .and().authorizeHttpRequests()
                                 .antMatchers("/actuator/**")
                                 .permitAll()
-                                .antMatchers("/api/auth/**")
+                                .antMatchers("/api/v1/users/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -130,5 +131,9 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofLax();
     }
 }

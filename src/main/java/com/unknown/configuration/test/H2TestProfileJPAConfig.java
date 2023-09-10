@@ -22,13 +22,16 @@ public class H2TestProfileJPAConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.hibernate.dialect.MySQL5Dialect");
         dataSource.setUrl("jdbc:mysql://localhost:3306/spring-auth-test?createDatabaseIfNotExist=true");
-        dataSource.setUsername("test");
+        dataSource.setUsername("root");
         dataSource.setPassword("password");
-
         return dataSource;
     }
 
-    // configure entityManagerFactory
-    // configure transactionManager
-    // configure additional Hibernate properties
+    /*
+       dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("sa");
+*/
+
 }

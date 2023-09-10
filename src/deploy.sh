@@ -8,15 +8,20 @@ wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
 sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
 sudo apt update
 sudo apt install -y java-17-amazon-corretto-jdk
-sudo wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.8.7-bin.tar.gz
-sudo tar -xvf apache-maven-3.8.7-bin.tar.gz
-sudo mv apache-maven-3.8.7 /opt/
 sudo apt install -y nginx
+#sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+#yes | curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+#apt-cache policy docker-ce
+#sudo apt install -y docker-ce
+
+# make sure stocktrade docker is not running
+#sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=stocktrade:latest --format="{{.ID}}"))
 
 # copy nginx conf to default
-sudo cp spring-auth.conf /etc/nginx/sites-available/
+sudo cp auth.conf /etc/nginx/sites-available/
 
-sudo ln -s /etc/nginx/sites-available/spring-auth.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/auth.conf /etc/nginx/sites-enabled/
 
 sudo unlink /etc/nginx/sites-enabled/default
 
@@ -25,20 +30,20 @@ sudo nginx -t
 sudo systemctl restart nginx
 
 # build dockerfile
-#sudo docker build -f Dockerfile -t spring-auth:latest .
+#sudo docker build -f Dockerfile -t stocktrade:latest .
 
 # run in detached mode
-#sudo docker run -p 8080:8080 -d spring-auth:latest
-sudo deluser spring-auth
-sudo useradd spring-auth
-sudo chown spring-auth:spring-auth /home/ubuntu/logs
-/opt/apache-maven-3.8.7/bin/mvn clean compile package
+#sudo docker run -p 8080:8080 -d stocktrade:latest
 
-sudo chown spring-auth:spring-auth /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
-sudo chmod 500 /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
-sudo cp spring-auth.service /etc/systemd/system
-sudo systemctl enable spring-auth.service
-sudo systemctl start spring-auth.service
+/opt/apache-maven-3.8.7/bin/mvn clean compile package
+sudo deluser authu
+sudo useradd authu
+sudo chown authu:authu /home/ubuntu/auth-api/target/stocktrade-0.1.jar
+sudo chmod 500 /home/ubuntu/auth-api/target/stocktrade-0.1.jar
+sudo chown authu:authu /home/ubuntu/logs
+sudo cp auth.service /etc/systemd/system
+sudo systemctl enable auth.service
+sudo systemctl start auth.service
 
 sleep 15
 

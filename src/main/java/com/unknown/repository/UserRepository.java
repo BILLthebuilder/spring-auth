@@ -9,15 +9,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @CacheConfig(cacheNames = "users")
-public interface UserRepository extends JpaRepository<User,Long> {
-    @Cacheable
-    User findById(long id);
+public interface UserRepository extends JpaRepository<User,UUID> {
     @Cacheable
     User findByEmail(String email);
-    @Cacheable
-    User deleteUserById(long id);
+
+    List<User> findAllByStatus(boolean status);
 }
 
