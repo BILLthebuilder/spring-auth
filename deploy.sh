@@ -13,7 +13,9 @@ sudo apt install -y java-17-amazon-corretto-jdk
 #sudo mv apache-maven-3.9.4 /opt/
 sudo apt install -y nginx
 
-# copy nginx conf to default
+# copy nginx configuration files to respective paths
+sudo cp self-signed.conf /etc/nginx/snippets/
+sudo cp ssl-params.conf /etc/nginx/snippets/
 sudo cp spring-auth.conf /etc/nginx/sites-available/
 
 sudo ln -s /etc/nginx/sites-available/spring-auth.conf /etc/nginx/sites-enabled/
@@ -24,9 +26,7 @@ sudo nginx -t
 
 sudo systemctl restart nginx
 
-sudo ufw allow http
-
-sudo ufw allow https
+sudo ufw allow 'Nginx Full'
 
 # build dockerfile
 #sudo docker build -f Dockerfile -t spring-auth:latest .
