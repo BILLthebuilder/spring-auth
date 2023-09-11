@@ -1,4 +1,6 @@
 # auth-api
+
+[![spring-auth app](https://github.com/BILLthebuilder/spring-auth/actions/workflows/aws.yml/badge.svg)](https://github.com/BILLthebuilder/spring-auth/actions/workflows/aws.yml)
 ## About
 
 This is an Auth service that provides authentication services:
