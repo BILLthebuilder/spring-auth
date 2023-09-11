@@ -8,9 +8,9 @@ wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
 sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
 sudo apt update
 sudo apt install -y java-17-amazon-corretto-jdk
-sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz
-sudo tar -xvf apache-maven-3.9.4-bin.tar.gz
-sudo mv apache-maven-3.9.4 /opt/
+#sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz
+#sudo tar -xvf apache-maven-3.9.4-bin.tar.gz
+#sudo mv apache-maven-3.9.4 /opt/
 sudo apt install -y nginx
 
 # copy nginx conf to default
@@ -36,7 +36,7 @@ sudo ufw allow https
 sudo deluser spring-auth
 sudo useradd spring-auth
 sudo chown spring-auth:spring-auth /home/ubuntu/logs
-/opt/apache-maven-3.9.4/bin/mvn clean compile package  -DskipTests
+./mvnw clean compile package  -DskipTests
 
 sudo chown spring-auth:spring-auth /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
 sudo chmod 500 /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
