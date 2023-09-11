@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<GenericResponse> login(@RequestBody @Valid LoginUserRequest request,Errors errors){
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginUserRequest request,Errors errors){
 
         return userService.login(request,errors);
     }

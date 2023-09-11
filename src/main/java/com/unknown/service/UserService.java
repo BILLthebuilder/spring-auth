@@ -90,13 +90,13 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<GenericResponse> login(LoginUserRequest request, Errors errors) {
+    public ResponseEntity<LoginResponse> login(LoginUserRequest request, Errors errors) {
         Optional<String> token = Optional.empty();
-        GenericResponse response = null;
+        LoginResponse response = null;
         try {
             if (errors.hasFieldErrors()) {
                 FieldError fieldError = errors.getFieldError();
-                response = new GenericResponse(fieldError.getDefaultMessage(), Status.FAILED);
+                response = new LoginResponse(fieldError.getDefaultMessage(), token.orElse(""),Status.FAILED);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(response);
             }
@@ -105,7 +105,7 @@ public class UserService {
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(request.email(), request.password()));
             if (!authentication.isAuthenticated()) {
-                response = new GenericResponse("Unable to Login", Status.FAILED);
+                response = new LoginResponse("Unable to Login", token.orElse(""),Status.FAILED);
                 return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
             } else {
                 var now = Instant.now();
@@ -119,14 +119,14 @@ public class UserService {
 //                            .claim("roles", scope)
                                 .build();
                 token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue().describeConstable();
-                response = new GenericResponse("User logged in successfully", Status.SUCCESS);
+                response = new LoginResponse("User logged in successfully", token.orElse(""),Status.SUCCESS);
                 return ResponseEntity.ok()
                         .header(HttpHeaders.AUTHORIZATION, token.orElse(""))
                         .body(response);
             }
         } catch (Exception ex) {
             log.error("Login Error", ex);
-            response = new GenericResponse("Login Error", Status.FAILED);
+            response = new LoginResponse("Login Error", token.orElse(""),Status.FAILED);
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
     }
