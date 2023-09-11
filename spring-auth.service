@@ -4,7 +4,7 @@ After=syslog.target
 
 [Service]
 User=spring-auth
-ExecStart=java -jar -Dspring.profiles.active=prod /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
+ExecStart=/usr/bin/java -jar -Dspring.profiles.active=prod /home/ubuntu/spring-auth/target/spring-auth-0.1.jar
 SuccessExitStatus=143
 Restart=always
 RestartSec=5
