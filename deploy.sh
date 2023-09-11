@@ -24,6 +24,10 @@ sudo nginx -t
 
 sudo systemctl restart nginx
 
+sudo ufw allow http
+
+sudo ufw allow https
+
 # build dockerfile
 #sudo docker build -f Dockerfile -t spring-auth:latest .
 
